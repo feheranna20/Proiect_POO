@@ -15,5 +15,10 @@ namespace MagazinOnline
             ExpiryDate = expiryDate;
             StorageConditions = storageConditions;
         }
+
+        public override string GetDetails()
+        {
+            return $"Name: {Name}, Price: {Price}, Stock: {Stock}, Expiry date: {ExpiryDate}, Storage conditions: {StorageConditions}";
+        }
     }
 }

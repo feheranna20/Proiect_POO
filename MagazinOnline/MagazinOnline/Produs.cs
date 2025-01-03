@@ -18,5 +18,7 @@ namespace MagazinOnline
             Price = price;
             Stock = stock;
         }
+
+        public abstract string GetDetails();
     }
 }

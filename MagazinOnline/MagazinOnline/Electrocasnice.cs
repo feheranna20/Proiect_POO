@@ -15,5 +15,10 @@ namespace MagazinOnline
             EnergyEfficiencyClass = energyEfficiencyClass;
             MaxPower = maxPower;
         }
+
+        public override string GetDetails()
+        {
+            return $"Name: {Name}, Price: {Price}, Stock: {Stock}, Energy efficiency class: {EnergyEfficiencyClass}, Maximum power: {MaxPower}";
+        }
     }
 }
