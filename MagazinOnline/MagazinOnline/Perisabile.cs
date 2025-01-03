@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MagazinOnline
 {
-    internal class Perisabile
+    public class Perisabile : Produs
     {
+        public Perisabile(string name, decimal price, int stock) : base(name, price, stock) { }
     }
 }

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MagazinOnline
 {
-    internal class Electrocasnice
+    public class Electrocasnice : Produs
     {
+        public Electrocasnice(string name, decimal price, int stock) : base(name, price, stock) { }
     }
 }

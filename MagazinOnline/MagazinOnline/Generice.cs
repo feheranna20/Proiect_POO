@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MagazinOnline
 {
-    internal class Generice
+    public class Generice : Produs
     {
+        public Generice(string name, decimal price, int stock) : base(name, price, stock) { }
     }
 }
