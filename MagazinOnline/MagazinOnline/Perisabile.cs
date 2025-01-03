@@ -8,6 +8,12 @@ namespace MagazinOnline
 {
     public class Perisabile : Produs
     {
-        public Perisabile(string name, decimal price, int stock) : base(name, price, stock) { }
+        private DateTime ExpiryDate { get; set; }
+        private string StorageConditions { get; set; }
+        public Perisabile(string name, decimal price, int stock, DateTime expiryDate, string storageConditions) : base(name, price, stock)
+        { 
+            ExpiryDate = expiryDate;
+            StorageConditions = storageConditions;
+        }
     }
 }
