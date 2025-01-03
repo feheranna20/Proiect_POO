@@ -16,14 +16,13 @@ namespace MagazinOnline
         public string Status { get; set; } = "In asteptare";
         public DateTime DeliveryDate { get; set; }
 
-        public Comanda(string customerName, string phone, string email, string address, List<Produs> products, string status, DateTime deliveryDate) 
+        public Comanda(string customerName, string phone, string email, string address, List<Produs> products, DateTime deliveryDate) 
         { 
             CustomerName = customerName;
             Phone = phone;
             Email = email;
             Address = address;
             Products = products;
-            Status = status;
             DeliveryDate = deliveryDate;
         }
     }
