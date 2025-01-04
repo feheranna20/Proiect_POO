@@ -17,13 +17,13 @@
                 switch (choice)
                 {
                     case "1":
-                        
+                        UserMenu();
                         break;
                     case "2":
-                        
+                        AdminMenu();
                         break;
                     case "0":
-                        
+         
                         return;
                     default:
                         Console.WriteLine("Invalid choice. Press any key to try again.");
@@ -40,7 +40,7 @@
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("=== User Menu ===");
+                Console.WriteLine("=== User Menu ===\n");
                 Console.WriteLine("1. View All Products");
                 Console.WriteLine("2. Search Product by Name");
                 Console.WriteLine("3. Sort Products by Price");
@@ -86,7 +86,7 @@
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("=== Admin Menu ===");
+                Console.WriteLine("=== Admin Menu ===\n");
                 Console.WriteLine("1. Add Product");
                 Console.WriteLine("2. Remove Product");
                 Console.WriteLine("3. Update Stock");
