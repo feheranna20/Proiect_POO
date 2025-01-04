@@ -50,6 +50,37 @@ namespace MagazinOnline
 
             throw new Exception("Product not found.");
         }
+        public List<Produs> SearchByName(string name)
+        {
+            List<Produs> result = new List<Produs>();
+            foreach (var product in Products)
+            {
+                if (product.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    result.Add(product);
+                }
+            }
+            return result;
+        }
+        public List<Produs> SortByPrice(bool ascending = true)
+        {
+            List<Produs> sortedProducts = new List<Produs>(Products);
+
+            for (int i = 0; i < sortedProducts.Count - 1; i++)
+            {
+                for (int j = i + 1; j < sortedProducts.Count; j++)
+                {
+                    if ((ascending && sortedProducts[i].Price > sortedProducts[j].Price) ||
+                        (!ascending && sortedProducts[i].Price < sortedProducts[j].Price))
+                    {
+                        var temp = sortedProducts[i];
+                        sortedProducts[i] = sortedProducts[j];
+                        sortedProducts[j] = temp;
+                    }
+                }
+            }
+            return sortedProducts;
+        }
 
     }
 }
