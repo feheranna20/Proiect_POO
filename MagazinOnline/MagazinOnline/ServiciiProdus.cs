@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,19 +17,10 @@ namespace MagazinOnline
 
         public void RemoveProduct(string name)
         {
-            Produs productToRemove = null;
-            foreach (var product in Products)
+            var product = Products.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            if (product != null)
             {
-                if (product.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
-                {
-                    productToRemove = product;
-                    break;
-                }
-            }
-
-            if (productToRemove != null)
-            {
-                Products.Remove(productToRemove);
+                Products.Remove(product);
             }
             else
             {
@@ -39,48 +30,27 @@ namespace MagazinOnline
 
         public void UpdateStock(string name, int newStock)
         {
-            foreach (var product in Products)
+            var product = Products.FirstOrDefault(p => p.Name == name);
+            if (product != null)
             {
-                if (product.Name == name)
-                {
-                    product.Stock = newStock;
-                    return;
-                }
+                product.Stock = newStock;
             }
-
-            throw new Exception("Product not found.");
+            else
+            {
+                throw new Exception("Product not found.");
+            }
         }
+
         public List<Produs> SearchByName(string name)
         {
-            List<Produs> result = new List<Produs>();
-            foreach (var product in Products)
-            {
-                if (product.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
-                {
-                    result.Add(product);
-                }
-            }
-            return result;
+            return Products.Where(p => p.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
         }
+
         public List<Produs> SortByPrice(bool ascending = true)
         {
-            List<Produs> sortedProducts = new List<Produs>(Products);
-
-            for (int i = 0; i < sortedProducts.Count - 1; i++)
-            {
-                for (int j = i + 1; j < sortedProducts.Count; j++)
-                {
-                    if ((ascending && sortedProducts[i].Price > sortedProducts[j].Price) ||
-                        (!ascending && sortedProducts[i].Price < sortedProducts[j].Price))
-                    {
-                        var temp = sortedProducts[i];
-                        sortedProducts[i] = sortedProducts[j];
-                        sortedProducts[j] = temp;
-                    }
-                }
-            }
-            return sortedProducts;
+            return ascending
+                ? Products.OrderBy(p => p.Price).ToList()
+                : Products.OrderByDescending(p => p.Price).ToList();
         }
-
     }
 }
