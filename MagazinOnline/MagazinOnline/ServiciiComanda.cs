@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,5 +22,29 @@ namespace MagazinOnline
             }
         }
 
+        public void ProcessOrders()
+        {
+            foreach (var order in Orders)
+            {
+                if (order.Status == "In asteptare")
+                {
+                    order.Status = "In curs de livrare";
+                    order.DeliveryDate = DateTime.Now.AddDays(3); 
+                }
+            }
+        }
+
+        public List<Comanda> GetDeliveredOrders()
+        {
+            foreach (var order in Orders)
+            {
+                if (order.DeliveryDate < DateTime.Now)
+                {
+                    order.Status = "Livrat";
+                }
+            }
+
+            return Orders.Where(o => o.Status == "Livrat").ToList();
+        }
     }
 }
