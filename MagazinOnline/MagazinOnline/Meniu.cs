@@ -1,12 +1,21 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
 namespace MagazinOnline
 {
     internal class Meniu
     {
         private Magazin magazin;
+        private const string ProduseFilePath = "produse.txt";
+        private const string ComenziFilePath = "comenzi.txt";
 
         public Meniu(Magazin magazin)
         {
             this.magazin = magazin;
+            IncarcaProduseDinFisier();
+            IncarcaComenziDinFisier();
         }
 
         public void UserMenu()
@@ -135,9 +144,7 @@ namespace MagazinOnline
         {
             Console.Write("Sorteaza dupa pret (1 pentru Crescator, 2 pentru Descrescator): ");
             string sortChoice = Console.ReadLine();
-            var sorted = magazin.Produse
-                .OrderBy(p => sortChoice == "1" ? p.Price : -p.Price)
-                .ToList();
+            var sorted = sortChoice == "1" ? magazin.Produse.OrderBy(p => p.Price) : magazin.Produse.OrderByDescending(p => p.Price);
 
             foreach (var product in sorted)
             {
@@ -191,6 +198,7 @@ namespace MagazinOnline
 
             var order = new Comanda(name, phone, email, address, new List<Produs>(cart), DateTime.Now.AddDays(3));
             magazin.SalveazaComanda(order);
+            SalveazaComenziInFisier();
             cart.Clear();
 
             Console.WriteLine("Comanda a fost plasata cu succes.");
@@ -200,93 +208,55 @@ namespace MagazinOnline
 
         private void AddProduct()
         {
-            Console.Write("Intruduceti tipul produsului (1-Generice, 2-Perisabile, 3-Electrocasnice): ");
-            string type = Console.ReadLine();
             Console.Write("Introduceti numele produsului: ");
             string name = Console.ReadLine();
-            Console.Write("Introduceti pretul produsului: ");
+            Console.Write("Introduceti pretul: ");
             decimal price = decimal.Parse(Console.ReadLine());
-            Console.Write("Introduceti numarul de produse in stoc: ");
+            Console.Write("Introduceti stocul: ");
             int stock = int.Parse(Console.ReadLine());
 
-            Produs product = null;
-
-            switch (type)
-            {
-                case "1":
-                    product = new Generice(name, price, stock);
-                    break;
-                case "2":
-                    Console.Write("Introduceti data de expirare (yyyy-mm-dd): ");
-                    DateTime expiryDate = DateTime.Parse(Console.ReadLine());
-                    Console.Write("Introduceti conditiile de depozitare: ");
-                    string conditions = Console.ReadLine();
-                    product = new Perisabile(name, price, stock, expiryDate, conditions);
-                    break;
-                case "3":
-                    Console.Write("Introduceti clasa de eficienta energetica: ");
-                    string efficiencyClass = Console.ReadLine();
-                    Console.Write("Introduceti puterea maxima: ");
-                    int maxPower = int.Parse(Console.ReadLine());
-                    product = new Electrocasnice(name, price, stock, efficiencyClass, maxPower);
-                    break;
-                default:
-                    Console.WriteLine("Tip invalid de produs.");
-                    return;
-            }
-
+            var product = new Generice(name, price, stock);
             magazin.AdaugaProdus(product);
+            SalveazaProduseInFisier();
+
             Console.WriteLine("Produs adaugat cu succes.");
-            Console.WriteLine("Apasati orice pentru a va intoarce.");
             Console.ReadKey();
         }
 
-        private void RemoveProduct()
+        private void SalveazaProduseInFisier()
         {
-            Console.Write("Introduceti numele produsului care va fi sters: ");
-            string name = Console.ReadLine();
-            magazin.ScoateProdus(name);
-            Console.WriteLine("Produsul a fost sters cu succes.");
-            Console.WriteLine("Apasati orice pentru a va intoarce.");
-            Console.ReadKey();
+            File.WriteAllLines(ProduseFilePath, magazin.Produse.Select(p => $"{p.Name}|{p.Price}|{p.Stock}"));
         }
 
-        private void UpdateStock()
+        private void IncarcaProduseDinFisier()
         {
-            Console.Write("Introduceti numele produsului: ");
-            string name = Console.ReadLine();
-            Console.Write("Introduceti noul stoc: ");
-            int newStock = int.Parse(Console.ReadLine());
-
-            magazin.ActualizeazaStoc(name, newStock);
-            Console.WriteLine("Stocul a fost updatat cu succes.");
-            Console.WriteLine("Apasati orice pentru a va intoarce.");
-            Console.ReadKey();
-        }
-
-        private void ViewOrders()
-        {
-            Console.Clear();
-            Console.WriteLine("=== Toate Comenzile ===");
-            foreach (var order in magazin.Comenzi)
+            if (File.Exists(ProduseFilePath))
             {
-                Console.WriteLine($"Client: {order.CustomerName}, Status: {order.Status}, Data Livrarii: {order.DeliveryDate}");
+                var lines = File.ReadAllLines(ProduseFilePath);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('|');
+                    magazin.AdaugaProdus(new Generice(parts[0], decimal.Parse(parts[1]), int.Parse(parts[2])));
+                }
             }
-            Console.WriteLine("Apasati orice pentru a va intoarce.");
-            Console.ReadKey();
         }
 
-        private void ProcessOrders()
+        private void SalveazaComenziInFisier()
         {
-            foreach (var order in magazin.Comenzi.Where(o => o.Status == "In asteptare"))
-            {
-                order.Status = "In curs de livrare";
-                order.DeliveryDate = DateTime.Now.AddDays(3);
-            }
+            File.WriteAllLines(ComenziFilePath, magazin.Comenzi.Select(c => $"{c.CustomerName}|{c.Status}|{c.DeliveryDate}"));
+        }
 
-            Console.WriteLine("Comenzile au fost plasate cu succes.");
-            Console.WriteLine("Apasati orice pentru a va intoarce.");
-            Console.ReadKey();
+        private void IncarcaComenziDinFisier()
+        {
+            if (File.Exists(ComenziFilePath))
+            {
+                var lines = File.ReadAllLines(ComenziFilePath);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('|');
+                    magazin.SalveazaComanda(new Comanda(parts[0], "", "", "", new List<Produs>(), DateTime.Parse(parts[2])));
+                }
+            }
         }
     }
 }
