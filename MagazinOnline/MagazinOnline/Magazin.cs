@@ -18,10 +18,19 @@ namespace MagazinOnline
 
         public void ScoateProdus(string name)
         {
-            var produs = Produse.FirstOrDefault(p => p.Name == name);
-            if (produs != null)
+            Produs produsDeSters = null;
+            foreach (var produs in Produse)
             {
-                Produse.Remove(produs);
+                if (produs.Name == name)
+                {
+                    produsDeSters = produs;
+                    break;
+                }
+            }
+
+            if (produsDeSters != null)
+            {
+                Produse.Remove(produsDeSters);
             }
             else
             {
@@ -31,16 +40,23 @@ namespace MagazinOnline
 
         public void ActualizeazaStoc(string name, int newStock)
         {
-            var produs = Produse.FirstOrDefault(p => p.Name == name);
-            if (produs != null)
+            bool produsGasit = false;
+            foreach (var produs in Produse)
             {
-                produs.Stock = newStock;
+                if (produs.Name == name)
+                {
+                    produs.Stock = newStock;
+                    produsGasit = true;
+                    break;
+                }
             }
-            else
+
+            if (!produsGasit)
             {
                 throw new Exception("Produsul nu a fost gasit.");
             }
         }
+
         public void SalveazaComanda(Comanda comanda)
         {
             if (comanda != null)
@@ -52,6 +68,5 @@ namespace MagazinOnline
                 throw new ArgumentNullException(nameof(comanda), "Comanda nu poate fi null.");
             }
         }
-        
     }
 }
