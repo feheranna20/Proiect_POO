@@ -300,23 +300,45 @@ namespace MagazinOnline
                 }
             }
 
-            public void RemoveProduct()
+        public void RemoveProduct()
+        {
+            try
             {
-                try
-                {
-                    Console.Write("Introduceti numele produsului de eliminat: ");
-                    string name = Console.ReadLine();
-                    magazin.ScoateProdus(name);
-                    Console.WriteLine("Produsul a fost eliminat cu succes.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Eroare la eliminarea produsului: {ex.Message}");
-                }
-                Console.ReadKey();
-            }
+                Console.Write("Introduceti numele produsului de eliminat: ");
+                string name = Console.ReadLine();
 
-            public void UpdateStock()
+                Produs productToRemove = null;
+
+                foreach (var product in magazin.Produse)
+                {
+                    if (product.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        productToRemove = product;
+                        break;
+                    }
+                }
+
+                if (productToRemove != null)
+                {
+                    magazin.Produse.Remove(productToRemove);
+                    Console.WriteLine("Produsul a fost eliminat cu succes.");
+
+                    SalveazaProduseInFisier();
+                }
+                else
+                {
+                    Console.WriteLine("Produsul nu a fost gasit.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Eroare la eliminarea produsului: {ex.Message}");
+            }
+            Console.ReadKey();
+        }
+
+
+        public void UpdateStock()
             {
                 try
                 {
