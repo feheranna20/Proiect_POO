@@ -3,7 +3,7 @@ namespace MagazinOnline
     internal class Program
     {
         private static Magazin magazin = new Magazin();
-        private static Meniu meniu = new Meniu(magazin);
+        private static Functionalitati fct = new Functionalitati(magazin);
 
         static void Main(string[] args)
         {
@@ -54,22 +54,22 @@ namespace MagazinOnline
                     switch (choice)
                     {
                         case "1":
-                            meniu.ViewAllProducts();
+                            fct.ViewAllProducts();
                             break;
                         case "2":
-                            meniu.SearchProductByName();
+                            fct.SearchProductByName();
                             break;
                         case "3":
-                            meniu.SortProductsByPrice();
+                            fct.SortProductsByPrice();
                             break;
                         case "4":
-                            meniu.AddProductToCart(cart);
+                            fct.AddProductToCart(cart);
                             break;
                         case "5":
-                            meniu.ViewCart(cart);
+                            fct.ViewCart(cart);
                             break;
                         case "6":
-                            meniu.PlaceOrder(cart);
+                            fct.PlaceOrder(cart);
                             break;
                         case "0":
                             return;
@@ -99,19 +99,19 @@ namespace MagazinOnline
                     switch (choice)
                     {
                         case "1":
-                            meniu.AddProduct();
+                            fct.AddProduct();
                             break;
                         case "2":
-                            meniu.RemoveProduct();
+                            fct.RemoveProduct();
                             break;
                         case "3":
-                            meniu.UpdateStock();
+                            fct.UpdateStock();
                             break;
                         case "4":
-                            meniu.ViewOrders();
+                            fct.ViewOrders();
                             break;
                         case "5":
-                            meniu.ProcessOrders();
+                            fct.ProcessOrders();
                             break;
                         case "0":
                             return;

@@ -5,13 +5,13 @@ using System.Linq;
 
 namespace MagazinOnline
 {
-    internal class Meniu
+    internal class Functionalitati
     {
         private Magazin magazin;
         private const string ProduseFilePath = "produse.txt";
         private const string ComenziFilePath = "comenzi.txt";
 
-        public Meniu(Magazin magazin)
+        public Functionalitati(Magazin magazin)
         {
             this.magazin = magazin;
             IncarcaProduseDinFisier();
