@@ -275,29 +275,28 @@ namespace MagazinOnline
         {
             try
             {
+                
                 var lines = magazin.Produse.Select(p =>
                 {
-                    if (p is Generice)
+                    if (p is Generice productGenerice)
                     {
-                        var product = (Generice)p;
-                        return $"Generice|{product.Name}|{product.Price}|{product.Stock}";
+                        return $"Generice|{productGenerice.Name}|{productGenerice.Price}|{productGenerice.Stock}";
                     }
-                    else if (p is Electrocasnice)
+                    else if (p is Electrocasnice productElectrocasnice)
                     {
-                        var product = (Electrocasnice)p;
-                        return $"Electrocasnice|{product.Name}|{product.Price}|{product.Stock}|{product.EnergyEfficiencyClass}|{product.MaxPower}";
+                        return $"Electrocasnice|{productElectrocasnice.Name}|{productElectrocasnice.Price}|{productElectrocasnice.Stock}|{productElectrocasnice.EnergyEfficiencyClass}|{productElectrocasnice.MaxPower}";
                     }
-                    else if (p is Perisabile)
+                    else if (p is Perisabile productPerisabile)
                     {
-                        var product = (Perisabile)p;
-                        return $"Perisabile|{product.Name}|{product.Price}|{product.Stock}|{product.ExpiryDate:yyyy-MM-dd}|{product.StorageConditions}";
+                        return $"Perisabile|{productPerisabile.Name}|{productPerisabile.Price}|{productPerisabile.Stock}|{productPerisabile.ExpiryDate:yyyy-MM-dd}|{productPerisabile.StorageConditions}";
                     }
                     else
                     {
                         return string.Empty;
                     }
-                });
+                }).Where(line => !string.IsNullOrEmpty(line)).ToArray(); 
 
+                
                 File.WriteAllLines(ProduseFilePath, lines);
             }
             catch (Exception ex)
@@ -306,35 +305,35 @@ namespace MagazinOnline
             }
         }
 
-
         public void IncarcaProduseDinFisier()
         {
             try
             {
+                
                 if (File.Exists(ProduseFilePath))
                 {
                     var lines = File.ReadAllLines(ProduseFilePath);
                     foreach (var line in lines)
                     {
-                        var parts = line.Split('|');
+                        var parts = line.Split('|'); 
 
                         
-                        switch (parts[3])
+                        switch (parts[0])
                         {
                             case "Generice":
-                                magazin.AdaugaProdus(new Generice(parts[0], decimal.Parse(parts[1]), int.Parse(parts[2])));
+                                magazin.AdaugaProdus(new Generice(parts[1], decimal.Parse(parts[2]), int.Parse(parts[3])));
                                 break;
 
                             case "Electrocasnice":
                                 var energyEfficiencyClass = parts[4];
                                 var maxPower = int.Parse(parts[5]);
-                                magazin.AdaugaProdus(new Electrocasnice(parts[0], decimal.Parse(parts[1]), int.Parse(parts[2]), energyEfficiencyClass, maxPower));
+                                magazin.AdaugaProdus(new Electrocasnice(parts[1], decimal.Parse(parts[2]), int.Parse(parts[3]), energyEfficiencyClass, maxPower));
                                 break;
 
                             case "Perisabile":
                                 var expiryDate = DateTime.Parse(parts[4]);
                                 var storageConditions = parts[5];
-                                magazin.AdaugaProdus(new Perisabile(parts[0], decimal.Parse(parts[1]), int.Parse(parts[2]), expiryDate, storageConditions));
+                                magazin.AdaugaProdus(new Perisabile(parts[1], decimal.Parse(parts[2]), int.Parse(parts[3]), expiryDate, storageConditions));
                                 break;
 
                             default:
@@ -349,6 +348,7 @@ namespace MagazinOnline
                 Console.WriteLine($"Eroare la incarcarea produselor din fisier: {ex.Message}");
             }
         }
+
 
 
         public void SalveazaComenziInFisier()
