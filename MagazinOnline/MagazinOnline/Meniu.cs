@@ -58,7 +58,7 @@ namespace MagazinOnline
                     case "0":
                         return;
                     default:
-                        Console.WriteLine("Optiune invalida. Apasa orice si incearca din nou.");
+                        Console.WriteLine("Optiune invalida. Apasa orice tasta si incearca din nou.");
                         Console.ReadKey();
                         break;
                 }
@@ -115,7 +115,7 @@ namespace MagazinOnline
             {
                 Console.WriteLine(product.GetDetails());
             }
-            Console.WriteLine("Apasati orice pentru a va intoarce.");
+            Console.WriteLine("Apasati orice tasta pentru a va intoarce.");
             Console.ReadKey();
         }
 
@@ -136,7 +136,7 @@ namespace MagazinOnline
             {
                 Console.WriteLine("Nici un produs gasit.");
             }
-            Console.WriteLine("Apasati orice pentru a va intoarce.");
+            Console.WriteLine("Apasati orice tasta pentru a va intoarce.");
             Console.ReadKey();
         }
 
@@ -150,7 +150,7 @@ namespace MagazinOnline
             {
                 Console.WriteLine(product.GetDetails());
             }
-            Console.WriteLine("Apasati orice pentru a va intoarce.");
+            Console.WriteLine("Apasati orice tasta pentru a va intoarce.");
             Console.ReadKey();
         }
 
@@ -169,7 +169,7 @@ namespace MagazinOnline
             {
                 Console.WriteLine("Produsul nu a fost gasit.");
             }
-            Console.WriteLine("Apasati orice pentru a va intoarce.");
+            Console.WriteLine("Apasati orice tasta pentru a va intoarce.");
             Console.ReadKey();
         }
 
@@ -181,7 +181,7 @@ namespace MagazinOnline
             {
                 Console.WriteLine(product.GetDetails());
             }
-            Console.WriteLine("Apasati orice pentru a va intoarce.");
+            Console.WriteLine("Apasati orice tasta pentru a va intoarce.");
             Console.ReadKey();
         }
 
@@ -202,7 +202,7 @@ namespace MagazinOnline
             cart.Clear();
 
             Console.WriteLine("Comanda a fost plasata cu succes.");
-            Console.WriteLine("Apasati orice pentru a va intoarce.");
+            Console.WriteLine("Apasati orice tasta pentru a va intoarce.");
             Console.ReadKey();
         }
 
@@ -258,5 +258,53 @@ namespace MagazinOnline
                 }
             }
         }
+
+        private void RemoveProduct()
+        {
+            Console.Write("Introduceti numele produsului de eliminat: ");
+            string name = Console.ReadLine();
+            magazin.ScoateProdus(name);
+            Console.WriteLine("Produsul a fost eliminat cu succes.");
+            Console.WriteLine("Apasati orice tasta pentru a reveni.");
+            Console.ReadKey();
+        }
+
+        private void UpdateStock()
+        {
+            Console.Write("Introduceti numele produsului: ");
+            string name = Console.ReadLine();
+            Console.Write("Introduceti noua valoare a stocului: ");
+            int newStock = int.Parse(Console.ReadLine());
+            magazin.ActualizeazaStoc(name, newStock);
+            Console.WriteLine("Stocul a fost actualizat cu succes.");
+            Console.WriteLine("Apasati orice tasta pentru a reveni.");
+            Console.ReadKey();
+        }
+
+
+        private void ViewOrders()
+        {
+            Console.Clear();
+            Console.WriteLine("=== Toate Comenzile ===");
+            foreach (var order in magazin.Comenzi)
+            {
+                Console.WriteLine($"Client: {order.CustomerName}, Status: {order.Status}, Data livrarii: {order.DeliveryDate}");
+            }
+            Console.WriteLine("Apasati orice tasta pentru a reveni.");
+            Console.ReadKey();
+        }
+
+        private void ProcessOrders()
+        {
+            foreach (var order in magazin.Comenzi.Where(o => o.Status == "In asteptare"))
+            {
+                order.Status = "În curs de livrare";
+                order.DeliveryDate = DateTime.Now.AddDays(3);
+            }
+            Console.WriteLine("Comenzile au fost procesate cu succes.");
+            Console.WriteLine("Apasati orice tasta pentru a reveni.");
+            Console.ReadKey();
+        }
+
     }
 }
