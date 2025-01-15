@@ -212,63 +212,146 @@ namespace MagazinOnline
                 }
             }
 
-            public void AddProduct()
+        public void AddProduct()
+        {
+            try
             {
-                try
-                {
-                    Console.Write("Introduceti numele produsului: ");
-                    string name = Console.ReadLine();
-                    Console.Write("Introduceti pretul: ");
-                    decimal price = decimal.Parse(Console.ReadLine());
-                    Console.Write("Introduceti stocul: ");
-                    int stock = int.Parse(Console.ReadLine());
+                Console.WriteLine("Alege tipul produsului:");
+                Console.WriteLine("1. Generice");
+                Console.WriteLine("2. Electrocasnice");
+                Console.WriteLine("3. Perisabile");
+                Console.Write("Introduceti optiunea dorita (1/2/3): ");
+                int option = int.Parse(Console.ReadLine());
 
-                    var product = new Generice(name, price, stock);
-                    magazin.AdaugaProdus(product);
-                    SalveazaProduseInFisier();
+                Console.Write("Introduceti numele produsului: ");
+                string name = Console.ReadLine();
+                Console.Write("Introduceti pretul: ");
+                decimal price = decimal.Parse(Console.ReadLine());
+                Console.Write("Introduceti stocul: ");
+                int stock = int.Parse(Console.ReadLine());
 
-                    Console.WriteLine("Produs adaugat cu succes.");
-                }
-                catch (Exception ex)
+                Produs product = null;
+
+                
+                switch (option)
                 {
-                    Console.WriteLine($"Eroare la adaugarea produsului: {ex.Message}");
+                    case 1: 
+                        product = new Generice(name, price, stock);
+                        break;
+                    case 2: 
+                        Console.Write("Introduceti clasa de eficienta energetica: ");
+                        string energyEfficiencyClass = Console.ReadLine();
+                        Console.Write("Introduceti puterea maxima: ");
+                        int maxPower = int.Parse(Console.ReadLine());
+                        product = new Electrocasnice(name, price, stock, energyEfficiencyClass, maxPower);
+                        break;
+                    case 3: 
+                        Console.Write("Introduceti data expirarii (ex: 2025-12-31): ");
+                        DateTime expiryDate = DateTime.Parse(Console.ReadLine());
+                        Console.Write("Introduceti conditiile de depozitare: ");
+                        string storageConditions = Console.ReadLine();
+                        product = new Perisabile(name, price, stock, expiryDate, storageConditions);
+                        break;
+                    default:
+                        Console.WriteLine("Optiune invalida.");
+                        return;
                 }
-                Console.ReadKey();
+
+                
+                magazin.AdaugaProdus(product);
+                SalveazaProduseInFisier();
+
+                Console.WriteLine("Produs adaugat cu succes.");
             }
-
-            public void SalveazaProduseInFisier()
+            catch (Exception ex)
             {
-                try
-                {
-                    File.WriteAllLines(ProduseFilePath, magazin.Produse.Select(p => $"{p.Name}|{p.Price}|{p.Stock}"));
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Eroare la salvarea produselor in fisier: {ex.Message}");
-                }
+                Console.WriteLine($"Eroare la adaugarea produsului: {ex.Message}");
             }
+            Console.ReadKey();
+        }
 
-            public void IncarcaProduseDinFisier()
+
+        public void SalveazaProduseInFisier()
+        {
+            try
             {
-                try
+                var lines = magazin.Produse.Select(p =>
                 {
-                    if (File.Exists(ProduseFilePath))
+                    if (p is Generice)
                     {
-                        var lines = File.ReadAllLines(ProduseFilePath);
-                        foreach (var line in lines)
+                        var product = (Generice)p;
+                        return $"Generice|{product.Name}|{product.Price}|{product.Stock}";
+                    }
+                    else if (p is Electrocasnice)
+                    {
+                        var product = (Electrocasnice)p;
+                        return $"Electrocasnice|{product.Name}|{product.Price}|{product.Stock}|{product.EnergyEfficiencyClass}|{product.MaxPower}";
+                    }
+                    else if (p is Perisabile)
+                    {
+                        var product = (Perisabile)p;
+                        return $"Perisabile|{product.Name}|{product.Price}|{product.Stock}|{product.ExpiryDate:yyyy-MM-dd}|{product.StorageConditions}";
+                    }
+                    else
+                    {
+                        return string.Empty;
+                    }
+                });
+
+                File.WriteAllLines(ProduseFilePath, lines);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Eroare la salvarea produselor in fisier: {ex.Message}");
+            }
+        }
+
+
+        public void IncarcaProduseDinFisier()
+        {
+            try
+            {
+                if (File.Exists(ProduseFilePath))
+                {
+                    var lines = File.ReadAllLines(ProduseFilePath);
+                    foreach (var line in lines)
+                    {
+                        var parts = line.Split('|');
+
+                        
+                        switch (parts[3])
                         {
-                            var parts = line.Split('|');
-                            magazin.AdaugaProdus(new Generice(parts[0], decimal.Parse(parts[1]), int.Parse(parts[2])));
+                            case "Generice":
+                                magazin.AdaugaProdus(new Generice(parts[0], decimal.Parse(parts[1]), int.Parse(parts[2])));
+                                break;
+
+                            case "Electrocasnice":
+                                var energyEfficiencyClass = parts[4];
+                                var maxPower = int.Parse(parts[5]);
+                                magazin.AdaugaProdus(new Electrocasnice(parts[0], decimal.Parse(parts[1]), int.Parse(parts[2]), energyEfficiencyClass, maxPower));
+                                break;
+
+                            case "Perisabile":
+                                var expiryDate = DateTime.Parse(parts[4]);
+                                var storageConditions = parts[5];
+                                magazin.AdaugaProdus(new Perisabile(parts[0], decimal.Parse(parts[1]), int.Parse(parts[2]), expiryDate, storageConditions));
+                                break;
+
+                            default:
+                                Console.WriteLine("Tip de produs necunoscut.");
+                                break;
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Eroare la incarcarea produselor din fisier: {ex.Message}");
-                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Eroare la incarcarea produselor din fisier: {ex.Message}");
+            }
+        }
 
-            public void SalveazaComenziInFisier()
+
+        public void SalveazaComenziInFisier()
             {
                 try
                 {
