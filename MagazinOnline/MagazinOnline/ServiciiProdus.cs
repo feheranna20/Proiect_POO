@@ -17,10 +17,19 @@ namespace MagazinOnline
 
         public void RemoveProduct(string name)
         {
-            var product = Products.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
-            if (product != null)
+            Produs productToRemove = null;
+            foreach (var product in Products)
             {
-                Products.Remove(product);
+                if (product.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    productToRemove = product;
+                    break;
+                }
+            }
+
+            if (productToRemove != null)
+            {
+                Products.Remove(productToRemove);
             }
             else
             {
@@ -30,27 +39,51 @@ namespace MagazinOnline
 
         public void UpdateStock(string name, int newStock)
         {
-            var product = Products.FirstOrDefault(p => p.Name == name);
-            if (product != null)
+            foreach (var product in Products)
             {
-                product.Stock = newStock;
+                if (product.Name == name)
+                {
+                    product.Stock = newStock;
+                    return;
+                }
             }
-            else
-            {
-                throw new Exception("Product not found.");
-            }
+
+            throw new Exception("Product not found.");
         }
 
         public List<Produs> SearchByName(string name)
         {
-            return Products.Where(p => p.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+            List<Produs> result = new List<Produs>();
+            foreach (var product in Products)
+            {
+                if (product.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    result.Add(product);
+                }
+            }
+
+            return result;
         }
 
         public List<Produs> SortByPrice(bool ascending = true)
         {
-            return ascending
-                ? Products.OrderBy(p => p.Price).ToList()
-                : Products.OrderByDescending(p => p.Price).ToList();
+            List<Produs> sortedProducts = new List<Produs>(Products);
+
+            for (int i = 0; i < sortedProducts.Count - 1; i++)
+            {
+                for (int j = i + 1; j < sortedProducts.Count; j++)
+                {
+                    if ((ascending && sortedProducts[i].Price > sortedProducts[j].Price) ||
+                        (!ascending && sortedProducts[i].Price < sortedProducts[j].Price))
+                    {
+                        var temp = sortedProducts[i];
+                        sortedProducts[i] = sortedProducts[j];
+                        sortedProducts[j] = temp;
+                    }
+                }
+            }
+
+            return sortedProducts;
         }
     }
 }
