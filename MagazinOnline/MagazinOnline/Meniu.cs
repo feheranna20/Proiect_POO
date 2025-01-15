@@ -18,96 +18,7 @@ namespace MagazinOnline
             IncarcaComenziDinFisier();
         }
 
-        public void UserMenu()
-        {
-            var cart = new List<Produs>();
-            while (true)
-            {
-                Console.Clear();
-                Console.WriteLine("=== Meniu Utilizator ===\n");
-                Console.WriteLine("1. Vezi toate produsele");
-                Console.WriteLine("2. Cauta un produs dupa nume");
-                Console.WriteLine("3. Sorteaza produsele dupa pret");
-                Console.WriteLine("4. Adauga produsul in cos");
-                Console.WriteLine("5. Vezi cosul");
-                Console.WriteLine("6. Plaseaza comanda");
-                Console.WriteLine("0. Inapoi la meniul principal");
-                Console.Write("Alege o optiune: ");
-
-                string choice = Console.ReadLine();
-                switch (choice)
-                {
-                    case "1":
-                        ViewAllProducts();
-                        break;
-                    case "2":
-                        SearchProductByName();
-                        break;
-                    case "3":
-                        SortProductsByPrice();
-                        break;
-                    case "4":
-                        AddProductToCart(cart);
-                        break;
-                    case "5":
-                        ViewCart(cart);
-                        break;
-                    case "6":
-                        PlaceOrder(cart);
-                        break;
-                    case "0":
-                        return;
-                    default:
-                        Console.WriteLine("Optiune invalida. Apasa orice tasta si incearca din nou.");
-                        Console.ReadKey();
-                        break;
-                }
-            }
-        }
-
-        public void AdminMenu()
-        {
-            while (true)
-            {
-                Console.Clear();
-                Console.WriteLine("=== Meniu Administrator ===\n");
-                Console.WriteLine("1. Adauga un produs");
-                Console.WriteLine("2. Scoate un produs");
-                Console.WriteLine("3. Updateaza stocul");
-                Console.WriteLine("4. Vezi comenzile");
-                Console.WriteLine("5. Proceseaza comenzile");
-                Console.WriteLine("0. Inapoi la meniul principal");
-                Console.Write("Alege o optiune: ");
-
-                string choice = Console.ReadLine();
-                switch (choice)
-                {
-                    case "1":
-                        AddProduct();
-                        break;
-                    case "2":
-                        RemoveProduct();
-                        break;
-                    case "3":
-                        UpdateStock();
-                        break;
-                    case "4":
-                        ViewOrders();
-                        break;
-                    case "5":
-                        ProcessOrders();
-                        break;
-                    case "0":
-                        return;
-                    default:
-                        Console.WriteLine("Optiune invalida. Apasa orice si incearca din nou.");
-                        Console.ReadKey();
-                        break;
-                }
-            }
-        }
-
-        private void ViewAllProducts()
+        public void ViewAllProducts()
         {
             Console.Clear();
             Console.WriteLine("=== Toate Produsele ===");
@@ -119,7 +30,7 @@ namespace MagazinOnline
             Console.ReadKey();
         }
 
-        private void SearchProductByName()
+        public void SearchProductByName()
         {
             Console.Write("Introduceti numele produsului cautat: ");
             string name = Console.ReadLine();
@@ -140,7 +51,7 @@ namespace MagazinOnline
             Console.ReadKey();
         }
 
-        private void SortProductsByPrice()
+        public void SortProductsByPrice()
         {
             Console.Write("Sorteaza dupa pret (1 pentru Crescator, 2 pentru Descrescator): ");
             string sortChoice = Console.ReadLine();
@@ -154,7 +65,7 @@ namespace MagazinOnline
             Console.ReadKey();
         }
 
-        private void AddProductToCart(List<Produs> cart)
+        public void AddProductToCart(List<Produs> cart)
         {
             Console.Write("Introduceti numele produsului pentru a-l adauga in cos: ");
             string name = Console.ReadLine();
@@ -173,7 +84,7 @@ namespace MagazinOnline
             Console.ReadKey();
         }
 
-        private void ViewCart(List<Produs> cart)
+        public void ViewCart(List<Produs> cart)
         {
             Console.Clear();
             Console.WriteLine("=== Cosul Dumneavoastra ===");
@@ -185,7 +96,7 @@ namespace MagazinOnline
             Console.ReadKey();
         }
 
-        private void PlaceOrder(List<Produs> cart)
+        public void PlaceOrder(List<Produs> cart)
         {
             Console.Write("Numele: ");
             string name = Console.ReadLine();
@@ -206,7 +117,7 @@ namespace MagazinOnline
             Console.ReadKey();
         }
 
-        private void AddProduct()
+        public void AddProduct()
         {
             Console.Write("Introduceti numele produsului: ");
             string name = Console.ReadLine();
@@ -223,12 +134,12 @@ namespace MagazinOnline
             Console.ReadKey();
         }
 
-        private void SalveazaProduseInFisier()
+        public void SalveazaProduseInFisier()
         {
             File.WriteAllLines(ProduseFilePath, magazin.Produse.Select(p => $"{p.Name}|{p.Price}|{p.Stock}"));
         }
 
-        private void IncarcaProduseDinFisier()
+        public void IncarcaProduseDinFisier()
         {
             if (File.Exists(ProduseFilePath))
             {
@@ -241,12 +152,12 @@ namespace MagazinOnline
             }
         }
 
-        private void SalveazaComenziInFisier()
+        public void SalveazaComenziInFisier()
         {
             File.WriteAllLines(ComenziFilePath, magazin.Comenzi.Select(c => $"{c.CustomerName}|{c.Status}|{c.DeliveryDate}"));
         }
 
-        private void IncarcaComenziDinFisier()
+        public void IncarcaComenziDinFisier()
         {
             if (File.Exists(ComenziFilePath))
             {
@@ -259,7 +170,7 @@ namespace MagazinOnline
             }
         }
 
-        private void RemoveProduct()
+        public void RemoveProduct()
         {
             Console.Write("Introduceti numele produsului de eliminat: ");
             string name = Console.ReadLine();
@@ -269,7 +180,7 @@ namespace MagazinOnline
             Console.ReadKey();
         }
 
-        private void UpdateStock()
+        public void UpdateStock()
         {
             Console.Write("Introduceti numele produsului: ");
             string name = Console.ReadLine();
@@ -282,7 +193,7 @@ namespace MagazinOnline
         }
 
 
-        private void ViewOrders()
+        public void ViewOrders()
         {
             Console.Clear();
             Console.WriteLine("=== Toate Comenzile ===");
@@ -294,7 +205,7 @@ namespace MagazinOnline
             Console.ReadKey();
         }
 
-        private void ProcessOrders()
+        public void ProcessOrders()
         {
             foreach (var order in magazin.Comenzi.Where(o => o.Status == "In asteptare"))
             {
