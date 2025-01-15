@@ -13,59 +13,72 @@ namespace MagazinOnline
 
         public void AdaugaProdus(Produs produs)
         {
-            Produse.Add(produs);
+            try
+            {
+                Produse.Add(produs);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Eroare la adaugarea produsului: {ex.Message}");
+            }
         }
 
         public void ScoateProdus(string name)
         {
-            Produs produsDeSters = null;
-            foreach (var produs in Produse)
+            try
             {
-                if (produs.Name == name)
+                var produs = Produse.FirstOrDefault(p => p.Name == name);
+                if (produs != null)
                 {
-                    produsDeSters = produs;
-                    break;
+                    Produse.Remove(produs);
+                }
+                else
+                {
+                    throw new Exception("Produsul nu a fost gasit.");
                 }
             }
-
-            if (produsDeSters != null)
+            catch (Exception ex)
             {
-                Produse.Remove(produsDeSters);
-            }
-            else
-            {
-                throw new Exception("Produsul nu a fost gasit.");
+                Console.WriteLine($"Eroare la stergerea produsului: {ex.Message}");
             }
         }
 
         public void ActualizeazaStoc(string name, int newStock)
         {
-            bool produsGasit = false;
-            foreach (var produs in Produse)
+            try
             {
-                if (produs.Name == name)
+                var produs = Produse.FirstOrDefault(p => p.Name == name);
+                if (produs != null)
                 {
                     produs.Stock = newStock;
-                    produsGasit = true;
-                    break;
+                }
+                else
+                {
+                    throw new Exception("Produsul nu a fost gasit.");
                 }
             }
-
-            if (!produsGasit)
+            catch (Exception ex)
             {
-                throw new Exception("Produsul nu a fost gasit.");
+                Console.WriteLine($"Eroare la actualizarea stocului: {ex.Message}");
             }
         }
 
         public void SalveazaComanda(Comanda comanda)
         {
-            if (comanda != null)
+            try
             {
-                Comenzi.Add(comanda);
+                if (comanda != null)
+                {
+                    Comenzi.Add(comanda);
+                }
+                else
+                {
+                    throw new ArgumentNullException(nameof(comanda), "Comanda nu poate fi null.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                throw new ArgumentNullException(nameof(comanda), "Comanda nu poate fi null.");
+                Console.WriteLine($"Eroare la salvarea comenzii: {ex.Message}");
             }
         }
     }
