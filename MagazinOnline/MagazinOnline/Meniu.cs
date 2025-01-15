@@ -33,8 +33,26 @@ namespace MagazinOnline
         public void SearchProductByName()
         {
             Console.Write("Introduceti numele produsului cautat: ");
-            string name = Console.ReadLine();
-            var results = magazin.Produse.Where(p => p.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+            string name = Console.ReadLine()?.Trim();
+
+            if (string.IsNullOrEmpty(name))
+            {
+                Console.WriteLine("Numele produsului nu poate fi gol.");
+                return;
+            }
+
+            List<Produs> results = new List<Produs>();
+
+            foreach (var product in magazin.Produse)
+            {
+                string productNameLower = product.Name.ToLower();
+                string searchNameLower = name.ToLower();
+
+                if (productNameLower.Contains(searchNameLower))
+                {
+                    results.Add(product);
+                }
+            }
 
             if (results.Count > 0)
             {
@@ -45,8 +63,9 @@ namespace MagazinOnline
             }
             else
             {
-                Console.WriteLine("Nici un produs gasit.");
+                Console.WriteLine("Nu s-a gasit niciun produs care sa corespunda cautarii.");
             }
+
             Console.WriteLine("Apasati orice tasta pentru a va intoarce.");
             Console.ReadKey();
         }
@@ -55,12 +74,28 @@ namespace MagazinOnline
         {
             Console.Write("Sorteaza dupa pret (1 pentru Crescator, 2 pentru Descrescator): ");
             string sortChoice = Console.ReadLine();
-            var sorted = sortChoice == "1" ? magazin.Produse.OrderBy(p => p.Price) : magazin.Produse.OrderByDescending(p => p.Price);
+
+            List<Produs> sorted;
+
+            if (sortChoice == "1")
+            {
+                sorted = magazin.Produse.OrderBy(p => p.Price).ToList();
+            }
+            else if (sortChoice == "2")
+            {
+                sorted = magazin.Produse.OrderByDescending(p => p.Price).ToList();
+            }
+            else
+            {
+                Console.WriteLine("Optiune invalida.");
+                return;
+            }
 
             foreach (var product in sorted)
             {
                 Console.WriteLine(product.GetDetails());
             }
+
             Console.WriteLine("Apasati orice tasta pentru a va intoarce.");
             Console.ReadKey();
         }
@@ -69,7 +104,17 @@ namespace MagazinOnline
         {
             Console.Write("Introduceti numele produsului pentru a-l adauga in cos: ");
             string name = Console.ReadLine();
-            var product = magazin.Produse.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+            Produs product = null;
+
+            foreach (var p in magazin.Produse)
+            {
+                if (p.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    product = p;
+                    break;
+                }
+            }
 
             if (product != null)
             {
@@ -80,6 +125,7 @@ namespace MagazinOnline
             {
                 Console.WriteLine("Produsul nu a fost gasit.");
             }
+
             Console.WriteLine("Apasati orice tasta pentru a va intoarce.");
             Console.ReadKey();
         }
